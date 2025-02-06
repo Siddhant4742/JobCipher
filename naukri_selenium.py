@@ -7,13 +7,40 @@ from time import sleep
 from random import randint
 
 # Function to generate the job search URL
-def generate_url(index):
-    if index == 1:
-        return "https://www.naukri.com/machine-learning-engineer-jobs-in-india"
+def generate_naukri_job_url():
+    """Generates a Naukri.com job search URL based on user input."""
+    base_url = "https://www.naukri.com/"
+    
+    keyword = input("Enter job keyword: ").strip().replace(" ", "-")
+    location = input("Enter job location: ").strip().replace(" ", "-")
+    
+    experience_map = {f"{i} years": str(i) for i in range(1, 31)}
+    wfhtype_map = {"work from office": "0", "hybrid": "3", "remote": "2"}
+    ctcfilter_map = {"3": "0to3", "6": "3to6", "10": "6to10", "15": "10to15", "25": "15to25", "50": "25to50"}
+    
+    job_age = input("Enter job age (in days, leave blank if not needed): ").strip()
+    experience = experience_map.get(input("Enter experience (in years, leave blank if not needed): ").strip().lower(), "")
+    wfhtype = wfhtype_map.get(input("Enter work type (work from office, hybrid, remote, leave blank if not needed): ").strip().lower(), "")
+    
+    ctc_filters = input("Enter salary ranges (in LPA, separated by commas, leave blank if not needed): ").strip().lower().split(",")
+    ctc_filters = [ctcfilter_map.get(ctc.strip(), "") for ctc in ctc_filters if ctcfilter_map.get(ctc.strip(), "")]
+    
+    query_params = [f"{keyword}-jobs-in-{location}"]
+    base_url=f"{base_url}{'/'.join(query_params)}"
+    query_params = []
+   
+    if job_age: query_params.append(f"jobAge={job_age}")
+    if experience: query_params.append(f"experience={experience}")
+    if wfhtype: query_params.append(f"wfhType={wfhtype}")
+    for ctc in ctc_filters:
+        query_params.append(f"ctcFilter={ctc}")
+    if(query_params is not None):
+        naukri_url = f"{base_url}?{'&'.join(query_params)}"
     else:
-        return f"https://www.naukri.com/machine-learning-engineer-jobs-in-india-{index}"
+        naukri_url = base_url
+    print(naukri_url)
+    return naukri_url
 
-# Function to extract the rating from a job's details
 def extract_rating(rating_a):
     if rating_a is None or rating_a.find('span', class_="main-2") is None:
         return "None"
@@ -73,29 +100,29 @@ options.add_argument("--enable-unsafe-swiftshader")
 
 
 # Setting up the Chrome WebDriver
-driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
 
 # Start scraping from page 1 and go up to page 2
 start_page = 1
 page_end = 2
-for i in range(start_page, page_end):
-    print(i)
-    url = generate_url(i)
-    driver.get(url)
-    
-    # Sleep to let the page load fully, simulating human behavior
-    sleep(randint(5, 10))  # Random sleep for the page to load fully
-    
-    # Fetch the page source
-    page_source = driver.page_source
-    # print(page_source)
-    
-    # Generate the soup to parse
-    soup = BeautifulSoup(page_source, 'html.parser')
-    page_soup = soup.find_all("div", class_="srp-jobtuple-wrapper")
-    
-    # Parse the job data from the soup object
-    parse_job_data_from_soup(page_soup)
+
+url = generate_naukri_job_url()
+driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+
+driver.get(url)
+
+# Sleep to let the page load fully, simulating human behavior
+sleep(randint(5, 10))  # Random sleep for the page to load fully
+
+# Fetch the page source
+page_source = driver.page_source
+# print(page_source)
+
+# Generate the soup to parse
+soup = BeautifulSoup(page_source, 'html.parser')
+page_soup = soup.find_all("div", class_="srp-jobtuple-wrapper")
+
+# Parse the job data from the soup object
+parse_job_data_from_soup(page_soup)
 
 # Close the driver after the job scraping is done
 driver.quit()
