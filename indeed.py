@@ -23,12 +23,13 @@ def setup_driver():
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
     return driver
 
-# Generate Indeed URL based on job role and location
-def generate_indeed_url(job_role, location):
-    base_url = "https://www.indeed.com/jobs?"
+# Generate Indeed URL based on job role, location, and additional filters
+def generate_indeed_url_india(job_role, location, date_posted=None):
+    base_url = "https://in.indeed.com/jobs?"
     query_params = {
         "q": job_role,  # Job role
         "l": location,  # Location
+        "fromage": date_posted if date_posted else "",  # Date posted filter (e.g., "1" for last day)
     }
     # Encode the query parameters
     encoded_params = urllib.parse.urlencode(query_params)
@@ -76,7 +77,7 @@ def scrape_indeed_jobs(url):
 
         try:
             job_link = job.find("a", href=True)["href"]
-            job_info["Job Link"] = f"https://www.indeed.com{job_link}"
+            job_info["Job Link"] = f"https://in.indeed.com{job_link}"
         except:
             job_info["Job Link"] = "N/A"
 
@@ -92,18 +93,35 @@ def scrape_indeed_jobs(url):
 
 # Main function
 if __name__ == "__main__":
-    # Get user input for job role and location
+    # Get user input for job role, location, and additional filters
     job_role = input("Enter the job role (e.g., Python Developer): ")
-    location = input("Enter the location (e.g., New York, NY): ")
-
-    # Generate the Indeed URL
-    target_url = generate_indeed_url(job_role, location)
+    location = input("Enter the location (e.g., Bengaluru, Karnataka): ")
+    
+   
+    valid_fromage_values = ["1", "3", "7", "14"]
+    date_posted_filter = input(
+        "Enter how recent jobs should be posted (1 for last day, 3 for last three days, "
+        "7 for last seven days, 14 for last two weeks): ")
+    
+    if date_posted_filter not in valid_fromage_values:
+        print(f"Invalid value entered for date posted. Defaulting to '14' (last two weeks).")
+        date_posted_filter = "14"
+    # Generate the Indeed URL for India with additional filters
+    target_url = generate_indeed_url_india(job_role, location,  date_posted=date_posted_filter)
+    
     print(f"Scraping job listings from: {target_url}")
 
     # Scrape job listings
     jobs = scrape_indeed_jobs(target_url)
 
     # Print the scraped job listings in a tabular format
+    # if jobs:
+    #     print(tabulate(jobs, headers="keys", tablefmt="grid"))
+    # else:
+    #     print("No jobs found.")
+
+    # Print the scraped job listings in a tabular format
     for job in jobs:
-        print(job)
-        print("-"*50)
+        if job["Job Title"]!="N/A":
+            print(job)
+            print("-"*50)
