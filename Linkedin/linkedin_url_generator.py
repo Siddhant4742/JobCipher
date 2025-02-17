@@ -23,24 +23,37 @@ import urllib.parse
 #     return f"{base_url}?{query_string}"
 
 
-def generate_linkedin_job_url():
+def generate_linkedin_job_url(keyword,location,experience,job_type,remote,date_posted,company,industry):
     """Generates a LinkedIn job search URL based on user input."""
     base_url = "https://www.linkedin.com/jobs/search/?"
     
-    experience_map = {"Internship": "1", "Entry-level": "2", "Associate": "3"}
+    
+    
     job_type_map = {"Full-time": "F", "Part-time": "P", "Contract": "C", "Internship": "I"}
     remote_map = {"On-site": "1", "Hybrid": "2", "Remote": "3"}
     date_posted_map = {"24 hours": "r86400", "1 week": "r604800", "1 month": "r2592000"}
     industry_map = {"Software": "4", "Finance": "96", "Education": "142"}
-    
-    keyword = input("Enter job keyword: ").strip().replace(" ", "%20")
-    location = input("Enter job location: ").strip().replace(" ", "%20")
-    experience = experience_map.get(input("Enter experience level (Internship, Entry-level, Associate): "), "")
-    job_type = job_type_map.get(input("Enter job type (Full-time, Part-time, Contract, Internship): "), "")
-    remote = remote_map.get(input("Enter remote work type (On-site, Hybrid, Remote): "), "")
-    date_posted = date_posted_map.get(input("Enter date posted filter (24 hours, 1 week, 1 month): "), "")
-    company = input("Enter company ID (optional, leave blank if not needed): ").strip()
-    industry = industry_map.get(input("Enter industry filter (Software, Finance, Education): "), "")
+    if experience:
+        experience=int(experience)
+        if experience==0:
+            experience=1
+        elif experience==1:
+            experience=2
+        elif experience<=5:
+            experience=3
+        elif experience<=10:
+            experience=4
+        elif experience<=15:
+            experience=5
+        else :
+            experience=6
+    # keyword = input("Enter job keyword: ").strip().replace(" ", "%20")
+    # location = input("Enter job location: ").strip().replace(" ", "%20")
+    # Default to "1" if not in map
+    job_type = job_type_map.get(job_type)
+    remote = remote_map.get(remote)
+    date_posted = date_posted_map.get(date_posted)
+    industry = industry_map.get(industry)
     
     query_params = [
         f"keywords={keyword}",
