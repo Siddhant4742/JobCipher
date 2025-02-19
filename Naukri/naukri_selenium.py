@@ -38,7 +38,7 @@ def naukri(keyword,location,experience,remote,ctc_filters,date_posted):
 
     driver.get(url)
 
-    sleep(randint(5, 10)) 
+    sleep(6) 
     page_source = driver.page_source
 
     soup = BeautifulSoup(page_source, 'html.parser')
