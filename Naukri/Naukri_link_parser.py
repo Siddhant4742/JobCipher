@@ -27,19 +27,21 @@ def parse_job_data_from_soup(page_jobs):
         ex_wrap = job_details.find('span', class_="exp-wrap").span.span.text
         location = job_details.find('span', class_="loc-wrap ver-line").span.span.text
 
-        min_requirements = row4.span.text
+        # min_requirements = row4.span.text
 
         all_tech_stack = []
-        for tech_stack in row5.ul.find_all('li', class_="dot-gt tag-li "):
-            tech_stack = tech_stack.text
-            all_tech_stack.append(tech_stack)
+        ul_tag = row5.find("ul", class_="dot-gt tag-li")  # Ensure correct class name
+        if ul_tag:
+            for tech_stack in row5.ul.find_all('li', class_="dot-gt tag-li"):
+                tech_stack = tech_stack.text
+                all_tech_stack.append(tech_stack)
 
         print(f"Job Title : {job_title}")
         print(f"Company Name : {company_name}")
         print(f"Rating : {rating}")
         print(f"Experience : {ex_wrap}")
         print(f"Location : {location}")
-        print(f"Minimum Requirements : {min_requirements}")
+        # print(f"Minimum Requirements : {min_requirements}")
         print(f"All Tech Stack : {all_tech_stack}")
         print("***************END***************")
     print("********PAGE_JOBS END***********")

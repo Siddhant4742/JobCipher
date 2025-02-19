@@ -8,7 +8,7 @@ def generate_naukri_job_url(keyword,location,experience,remote,ctc_filters,date_
         print("true")
         experience=int(experience)
     else:
-        experience=1
+        experience=0
     # keyword = input("Enter job keyword: ").strip().replace(" ", "-")
     # location = input("Enter job location: ").strip().replace(" ", "-")
     
@@ -31,7 +31,7 @@ def generate_naukri_job_url(keyword,location,experience,remote,ctc_filters,date_
     # experience = experience_map.get(input("Enter experience (in years, leave blank if not needed): ").strip().lower(), "")
     # experience = experience_map.get(input("Enter experience (in years, leave blank if not needed): ").strip().lower(), "")
     # experience=experience_map.get(experience)
-    print("data type: ",type(experience))
+    # print("data type: ",type(experience))
     # wfhtype = wfhtype_map.get(input("Enter work type (work from office, hybrid, remote, leave blank if not needed): ").strip().lower(), "")
     wfhtype = wfhtype_map.get(remote)
     # ctc_filters = input("Enter salary ranges (in LPA, separated by commas, leave blank if not needed): ").strip().lower().split(",")
@@ -41,9 +41,11 @@ def generate_naukri_job_url(keyword,location,experience,remote,ctc_filters,date_
     base_url=f"{base_url}{'/'.join(query_params)}"
     query_params = []
    
-    if date_posted: query_params.append(f"jobAge={date_posted}")
-    if experience: query_params.append(f"experience={experience}")
     if wfhtype: query_params.append(f"wfhType={wfhtype}")
+    if experience: query_params.append(f"experience={experience}")
+    if date_posted: query_params.append(f"jobAge={date_posted}")
+    
+    
     for ctc in ctc_filters:
         query_params.append(f"ctcFilter={ctc}")
     if(query_params is not None):

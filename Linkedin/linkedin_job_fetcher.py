@@ -1,6 +1,5 @@
 import requests
 
-
 def fetchAndSave(url, path):
     r = requests.get(url)
     # Use UTF-8 encoding to handle special characters
