@@ -1,6 +1,6 @@
 import time
 import google.generativeai as genai
-genai.configure(api_key='AIzaSyC2s0AZz1MeCbSIB25P1qQAnY9AOW9y9SI')
+genai.configure(api_key='YOUR_API_KEY')
 
 
 def get_gemini_response(message):
