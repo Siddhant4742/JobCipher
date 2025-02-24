@@ -1,6 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 import csv
+from io import StringIO
 # from url_generator import generate_careerjet_url
 from careerjet.url_generator import generate_careerjet_url
 
@@ -8,9 +9,9 @@ headers = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
 }
 def careerjet(keyword, location, contract_type, working_hours, company, date_posted, radius):
-    print("Carrerjet thread started")
+    # print("Carrerjet thread started")
     url=generate_careerjet_url(keyword, location, contract_type, working_hours, company, date_posted, radius)
-    print(url)
+    # print(url)
     response = requests.get(url, headers=headers)
     soup = BeautifulSoup(response.text, "html.parser")
 
@@ -37,13 +38,13 @@ def careerjet(keyword, location, contract_type, working_hours, company, date_pos
         })
 
     # Save extracted jobs to CSV
-    csv_file = "java_jobs.csv"
-    with open(csv_file, "w", newline="", encoding="utf-8") as file:
-        writer = csv.DictWriter(file, fieldnames=["Title", "Company", "Location", "Summary", "Job URL"])
-        writer.writeheader()
-        writer.writerows(job_listings)
-
-    print(f"Jobs saved to {csv_file}")
+     # Convert job listings to CSV format and return as a string
+    output = StringIO()
+    writer = csv.DictWriter(output, fieldnames=["Title", "Company", "Location", "Summary", "Job URL"])
+    writer.writeheader()
+    writer.writerows(job_listings)
+    
+    return output.getvalue()
 
 
 # keyword = "Java Developer"

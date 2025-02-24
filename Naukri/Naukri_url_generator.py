@@ -5,7 +5,7 @@ def generate_naukri_job_url(keyword,location,experience,remote,ctc_filters,date_
     """Generates a Naukri.com job search URL based on user input."""
     base_url = "https://www.naukri.com/"
     if experience:
-        print("true")
+        # print("true")
         experience=int(experience)
     else:
         experience=0
@@ -52,5 +52,5 @@ def generate_naukri_job_url(keyword,location,experience,remote,ctc_filters,date_
         naukri_url = f"{base_url}?{'&'.join(query_params)}"
     else:
         naukri_url = base_url
-    print(naukri_url)
+    # print(naukri_url)
     return naukri_url

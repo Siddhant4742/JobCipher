@@ -29,7 +29,7 @@ from Naukri.Naukri_selenium_customiser import selenium_customiser
 
 
 def naukri(keyword,location,experience,remote,ctc_filters,date_posted):
-    print(" naukri thread start")
+    # print(" naukri thread start")
     options=selenium_customiser()
 
 
@@ -44,6 +44,7 @@ def naukri(keyword,location,experience,remote,ctc_filters,date_posted):
     soup = BeautifulSoup(page_source, 'html.parser')
     page_soup = soup.find_all("div", class_="srp-jobtuple-wrapper")
 
-    parse_job_data_from_soup(page_soup)
+    naukri_jobs=parse_job_data_from_soup(page_soup)
 
     driver.quit()
+    return naukri_jobs
