@@ -22,13 +22,7 @@ def generate_careerjet_url(keyword="", location="", contract_type="", working_ho
     
     # Replace spaces in keyword with "+"
     keyword = keyword.replace(" ", "+")
-    print("keyword:- ",keyword)
-    print("location:- ",location)
-    print("contract_type:- ",contract_type)
-    print("working_hours:- ",working_hours)
-    print("company:- ",company)
-    print("date_posted:- ",date_posted)
-    print("radius:- ",radius)
+    
 
     # Parameters dictionary
     params = {
