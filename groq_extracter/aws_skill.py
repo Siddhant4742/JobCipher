@@ -6,7 +6,7 @@ import os
 app = Flask(__name__)
 
 # Set your API key
-API_KEY = "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"
+API_KEY = "API_KEY"
 
 @app.route('/extract', methods=['POST'])
 def extract_from_pdf():
