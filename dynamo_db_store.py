@@ -2,8 +2,8 @@
 import uuid
 import boto3
 # AWS Credentials (Replace with your actual keys)
-AWS_ACCESS_KEY = "AKIASK5MCGLR5CHREH4G"
-AWS_SECRET_KEY = "fItoFa3pLzErvb2um4+xfGOASYvTb/oZeJcuQ7Z/"
+AWS_ACCESS_KEY = "your_acess_key"
+AWS_SECRET_KEY = "your_secret_key"
 AWS_REGION = "ap-south-1"  # Change this if needed
 
 # Initialize DynamoDB resource with credentials
