@@ -55,7 +55,7 @@ import io
 from Linkedin.linkedin import linkedin
 from Naukri.naukri_selenium import naukri
 from careerjet.real_time_main import careerjet
-
+from dynamo_db_store import store_user_data
 app = Flask(__name__)
 
 @app.route('/job-search', methods=['POST'])
@@ -63,6 +63,10 @@ def job_search():
     data = request.json
     
     # Extract parameters
+    name=data.get("name","")
+    college=data.get("college","")
+    branch=data.get("branch","")
+    
     keyword = data.get("keyword", "")
     location = data.get("location", "")
     experience = data.get("experience", 1)
@@ -73,14 +77,15 @@ def job_search():
     industry = data.get("industry", "")
     ctc_filters = data.get("ctc_filters", "")
     radius = data.get("radius", "10")
-
+    store_user_data(keyword,name,college,branch)
     # Run job search functions (returning CSV strings)
-    naukri_csv = naukri(keyword, location, experience, remote, ctc_filters, date_posted)
-    careerjet_csv = careerjet(keyword, location, job_type, job_type, company, date_posted, radius)
     linkedin_csv = linkedin(keyword, location, experience, job_type, remote, date_posted, company, industry)
+    naukri_csv = naukri(keyword, location, experience, remote, ctc_filters, date_posted)
+    # careerjet_csv = careerjet(keyword, location, job_type, job_type, company, date_posted, radius)
+    
 
     # Combine CSV data with section headers
-    final_output = f"Naukri Results\n{naukri_csv}\nCareerJet Results\n{careerjet_csv}\nLinkedIn Results\n{linkedin_csv}"
+    final_output = f"Naukri Results\n{naukri_csv}\nLinkedIn Results\n{linkedin_csv}"
 
     # Send as a text/csv response
     return Response(final_output, mimetype="text/csv", headers={"Content-Disposition": "attachment; filename=job_results.csv"})
