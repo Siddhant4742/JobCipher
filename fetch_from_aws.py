@@ -5,6 +5,9 @@ AWS_SERVER_URL = "http://your-ec2-public-ip:5000/job-search"
 
 # Job search parameters
 job_data = {
+    "name":"Siddhant",
+    "college":"VIT",
+    "branch":"CSE",
     "keyword": "java",
     "location": "india",
     "experience": 1,
