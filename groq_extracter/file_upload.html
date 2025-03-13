@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>File Upload and Print Response</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .container {
+      border: 1px solid #ddd;
+      padding: 20px;
+      border-radius: 5px;
+      margin-bottom: 20px;
+    }
+    button {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    pre {
+      background-color: #f5f5f5;
+      padding: 15px;
+      border-radius: 5px;
+      overflow-x: auto;
+      white-space: pre-wrap;
+    }
+    #status {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>File Upload and Print Response</h1>
+
+  <div class="container">
+    <input type="file" id="fileInput" />
+    <button id="uploadButton">Upload and Print Response</button>
+    <div id="status"></div>
+  </div>
+
+  <div class="container">
+    <h3>Response:</h3>
+    <pre id="response"></pre>
+  </div>
+
+  <script>
+    document.getElementById("uploadButton").addEventListener("click", async function () {
+      const fileInput = document.getElementById("fileInput");
+      const statusElement = document.getElementById("status");
+      const responseElement = document.getElementById("response");
+
+      if (!fileInput.files || fileInput.files.length === 0) {
+        alert("Please select a file to upload");
+        return;
+      }
+
+      const file = fileInput.files[0];
+      const formData = new FormData();
+      formData.append("file", file);
+
+      statusElement.textContent = "Uploading...";
+      responseElement.textContent = "";
+
+      try {
+        const response = await fetch("http://13.202.7.222:5001/extract", {
+          method: "POST",
+          mode: "cors", // ensure CORS is enabled
+          body: formData,
+        });
+
+        // Log status code for debugging
+        console.log("HTTP status:", response.status);
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(`HTTP error! Status: ${response.status}. Response: ${errorText}`);
+        }
+
+        const data = await response.json();
+        responseElement.textContent = JSON.stringify(data, null, 2);
+        statusElement.textContent = "Upload successful!";
+      } catch (error) {
+        statusElement.textContent = `Error: ${error.message}`;
+        responseElement.textContent = "";
+        console.error("Detailed error:", error);
+      }
+    });
+  </script>
+</body>
+</html>
