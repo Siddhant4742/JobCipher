@@ -19,7 +19,10 @@ def parse_job_data_from_soup(page_jobs):
         row5 = job.find('div', class_="row5")
         row6 = job.find('div', class_="row6")
         
-        job_title = row1.a.text
+        job_title_tag = row1.find('a')
+        job_title = job_title_tag.text.strip() if job_title_tag else "No Title"
+        job_link = job_title_tag['href'] if job_title_tag else "No Link"
+        # print(job_link)
         company_name = row2.span.a.text
         rating_a = row2.span
         rating = extract_rating(rating_a)
@@ -41,11 +44,12 @@ def parse_job_data_from_soup(page_jobs):
             "Rating": rating,
             "Experience": ex_wrap,
             "Location": location,
-            "Tech Stack": ", ".join(all_tech_stack)
+            "Tech Stack": ", ".join(all_tech_stack),
+            "Job link":job_link
         })
-    
+    print(job_listings)
     output = StringIO()
-    writer = csv.DictWriter(output, fieldnames=["Job Title", "Company Name", "Rating", "Experience", "Location", "Tech Stack"])
+    writer = csv.DictWriter(output, fieldnames=["Job Title", "Company Name", "Rating", "Experience", "Location", "Tech Stack","Job link"])
     writer.writeheader()
     writer.writerows(job_listings)
     
