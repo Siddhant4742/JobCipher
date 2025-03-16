@@ -49,14 +49,17 @@
 
 
 
-from flask import Flask, request, Response
+from flask import Flask, request, Response,jsonify
 import csv
 import io
 from Linkedin.linkedin import linkedin
 from Naukri.naukri_selenium import naukri
 from careerjet.real_time_main import careerjet
 from dynamo_db_store import store_user_data
+from flask_cors import CORS
+
 app = Flask(__name__)
+CORS(app,resources={r"/*":{"origins":"*"}})
 
 @app.route('/job-search', methods=['POST'])
 def job_search():
@@ -81,14 +84,22 @@ def job_search():
     # Run job search functions (returning CSV strings)
     linkedin_csv = linkedin(keyword, location, experience, job_type, remote, date_posted, company, industry)
     naukri_csv = naukri(keyword, location, experience, remote, ctc_filters, date_posted)
-    # careerjet_csv = careerjet(keyword, location, job_type, job_type, company, date_posted, radius)
-    
+    naukri_csv = naukri(keyword, location, experience, remote, ctc_filters, date_posted)
+#    careerjet_csv = careerjet(keyword, location, job_type, job_type, company, date_posted, radius)
+    print("linkedin started")
+    linkedin_csv = linkedin(keyword, location, experience, job_type, remote, date_posted, company, industry)
 
     # Combine CSV data with section headers
-    final_output = f"Naukri Results\n{naukri_csv}\nLinkedIn Results\n{linkedin_csv}"
+#    final_output = f"Naukri Results\n{naukri_csv}\nLinkedIn Results\n{linkedin_csv}"
 
     # Send as a text/csv response
-    return Response(final_output, mimetype="text/csv", headers={"Content-Disposition": "attachment; filename=job_results.csv"})
+#    return Response(final_output, mimetype="text/csv", headers={"Content-Disposition": "attachment; filename=job_results.csv"})
+    jobs_map = {
+        "LinkedIn Jobs": linkedin_csv,
+        "Naukri Jobs": naukri_csv
+    }
 
+    # Return the dictionary as a JSON response
+    return jsonify(jobs_map)
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)

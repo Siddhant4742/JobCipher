@@ -1,9 +1,11 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>File Upload and Print Response</title>
+  <title>Resume Upload and Job Search</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -26,12 +28,18 @@
       cursor: pointer;
       margin-top: 10px;
     }
-    pre {
-      background-color: #f5f5f5;
-      padding: 15px;
-      border-radius: 5px;
-      overflow-x: auto;
-      white-space: pre-wrap;
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background-color: #f2f2f2;
     }
     #status {
       margin-top: 10px;
@@ -40,24 +48,29 @@
   </style>
 </head>
 <body>
-  <h1>File Upload and Print Response</h1>
+  <h1>Resume Upload and Job Search</h1>
 
   <div class="container">
-    <input type="file" id="fileInput" />
-    <button id="uploadButton">Upload and Print Response</button>
+    <input type="file" id="fileInput" accept="application/pdf" />
+    <button id="uploadButton">Upload and Search Jobs</button>
     <div id="status"></div>
   </div>
 
   <div class="container">
-    <h3>Response:</h3>
-    <pre id="response"></pre>
+    <h3>LinkedIn Jobs:</h3>
+    <table id="linkedinTable"></table>
+  </div>
+  <div class="container">
+    <h3>Naukri Jobs:</h3>
+    <table id="naukriTable"></table>
   </div>
 
   <script>
     document.getElementById("uploadButton").addEventListener("click", async function () {
       const fileInput = document.getElementById("fileInput");
       const statusElement = document.getElementById("status");
-      const responseElement = document.getElementById("response");
+      const linkedinTable = document.getElementById("linkedinTable");
+      const naukriTable = document.getElementById("naukriTable");
 
       if (!fileInput.files || fileInput.files.length === 0) {
         alert("Please select a file to upload");
@@ -68,33 +81,119 @@
       const formData = new FormData();
       formData.append("file", file);
 
-      statusElement.textContent = "Uploading...";
-      responseElement.textContent = "";
+      statusElement.textContent = "Uploading and Extracting Information...";
+      linkedinTable.innerHTML = "";
+      naukriTable.innerHTML = "";
 
       try {
-        const response = await fetch("http://13.202.7.222:5001/extract", {
+        // Extract resume data
+        const extractResponse = await fetch("http://your_ec2_ip:5001/extract", {
           method: "POST",
-          mode: "cors", // ensure CORS is enabled
+          mode: "cors",
           body: formData,
         });
 
-        // Log status code for debugging
-        console.log("HTTP status:", response.status);
-
-        if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(`HTTP error! Status: ${response.status}. Response: ${errorText}`);
+        if (!extractResponse.ok) {
+          throw new Error(`HTTP error! Status: ${extractResponse.status}`);
         }
 
-        const data = await response.json();
-        responseElement.textContent = JSON.stringify(data, null, 2);
-        statusElement.textContent = "Upload successful!";
+        const parsedData = await extractResponse.json();
+        console.log("Extracted Data:", parsedData);
+
+        const infoText = parsedData["extracted_info"];
+        const infoLines = infoText.split("\n").slice(2);
+        const infoDict = {};
+
+        infoLines.forEach(line => {
+          if (line.includes(": ")) {
+            const [key, value] = line.split(": ", 2);
+            infoDict[key.trim("* ")] = value.trim();
+          }
+        });
+
+        const jobData = {
+          name: infoDict["Applicant Name"] || "N/A",
+          college: infoDict["College"] || "N/A",
+          branch: infoDict["Branch"] || "CSE",
+          keyword: infoDict["Most Relevant Skill"] || "Python",
+          location: infoDict["Location"] || "India",
+          experience: 0,
+          job_type: "fulltime",
+          remote: "on-site",
+          date_posted: "1 week",
+          company: "",
+          industry: "",
+          ctc_filters: "",
+          radius: "10"
+        };
+
+        statusElement.textContent = "Searching for Jobs...";
+
+        // Search for jobs
+        const jobResponse = await fetch("http://your_ec2_ip:5000/job-search", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(jobData),
+        });
+
+        if (!jobResponse.ok) {
+          throw new Error(`Job search failed! Status: ${jobResponse.status}`);
+        }
+
+        const jobResults = await jobResponse.json();
+        console.log("Job Search Response:", jobResults);
+        
+        // Display CSV results for LinkedIn and Naukri
+        displayCSV(jobResults["LinkedIn Jobs"], linkedinTable);
+        displayCSV(jobResults["Naukri Jobs"], naukriTable);
+        statusElement.textContent = "Job Search Successful!";
       } catch (error) {
         statusElement.textContent = `Error: ${error.message}`;
-        responseElement.textContent = "";
         console.error("Detailed error:", error);
       }
     });
+
+    // Simple CSV parser that handles quoted commas
+    function parseCSV(csvString) {
+      const lines = csvString.split(/\r?\n/).filter(line => line.trim() !== "");
+      return lines.map(line => {
+        // Split on commas not enclosed in quotes
+        const cells = line.split(/,(?=(?:[^"]*"[^"]*")*[^"]*$)/);
+        // Remove surrounding quotes from each cell
+        return cells.map(cell => cell.replace(/^"(.*)"$/, "$1"));
+      });
+    }
+
+    // Display parsed CSV data in the provided table element
+    function displayCSV(csvString, tableElement) {
+      tableElement.innerHTML = "";
+      const rows = parseCSV(csvString);
+      if (rows.length === 0) {
+        tableElement.innerHTML = "<tr><td>No jobs found</td></tr>";
+        return;
+      }
+
+      // Create header row
+      const headerRow = document.createElement("tr");
+      rows[0].forEach(headerText => {
+        const th = document.createElement("th");
+        th.textContent = headerText;
+        headerRow.appendChild(th);
+      });
+      tableElement.appendChild(headerRow);
+
+      // Create data rows
+      for (let i = 1; i < rows.length; i++) {
+        const row = rows[i];
+        const tr = document.createElement("tr");
+        row.forEach(cell => {
+          const td = document.createElement("td");
+          td.textContent = cell || ""; // Handle missing values gracefully
+          tr.appendChild(td);
+        });
+        tableElement.appendChild(tr);
+      }
+    }
   </script>
 </body>
 </html>
