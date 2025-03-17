@@ -1,8 +1,8 @@
 import requests
 import requests
 import json
-url = "http://your_ec2_ip:5001/extract"
-files = {"file": open("your_pdf.pdf", "rb")}
+url = "http://13.235.81.125:5001/extract"
+files = {"file": open("C:/Users/andur/OneDrive/Desktop/Swaroop_Atreya_Resume.pdf", "rb")}
 response = requests.post(url, files=files)
 
 print(response.json())
@@ -23,13 +23,14 @@ for line in info_lines:
 
 # Print extracted details
 print(info_dict)
-name = info_dict.get("Applicant Name", "N/A")
-branch = info_dict.get("Branch", "CSE")
-college = info_dict.get("College", "N/A")
-skill = info_dict.get("Most Relevant Skill", "Python")
-location = info_dict.get("Location", "India")
+name = info_dict.get("1", "N/A")
+branch = info_dict.get("2", "CSE")
+college = info_dict.get("3", "N/A")
+skill = info_dict.get("4", "Python")
+location = info_dict.get("5", "India")
+
 # AWS EC2 Public IP
-AWS_SERVER_URL = "http://your_ec2_ip:5000/job-search"
+AWS_SERVER_URL = "http://13.235.81.125:5000/job-search"
 
 # Job search parameters
 job_data = {

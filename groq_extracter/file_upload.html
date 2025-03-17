@@ -87,7 +87,7 @@
 
       try {
         // Extract resume data
-        const extractResponse = await fetch("http://your_ec2_ip:5001/extract", {
+        const extractResponse = await fetch("http://13.235.81.125:5001/extract", {
           method: "POST",
           mode: "cors",
           body: formData,
@@ -102,21 +102,22 @@
 
         const infoText = parsedData["extracted_info"];
         const infoLines = infoText.split("\n").slice(2);
-        const infoDict = {};
+        
 
-        infoLines.forEach(line => {
-          if (line.includes(": ")) {
-            const [key, value] = line.split(": ", 2);
-            infoDict[key.trim("* ")] = value.trim();
-          }
-        });
+        // infoLines.forEach(line => {
+        //   if (line.includes(": ")) {
+        //     const [key, value] = line.split(": ", 2);
+        //     infoDict[key.trim("* ")] = value.trim();
+        //   }
+        // });
+        const cleanText = (text) => text.replace(/^\d+[\.:]\s*/, "").trim();
 
         const jobData = {
-          name: infoDict["Applicant Name"] || "N/A",
-          college: infoDict["College"] || "N/A",
-          branch: infoDict["Branch"] || "CSE",
-          keyword: infoDict["Most Relevant Skill"] || "Python",
-          location: infoDict["Location"] || "India",
+          name: infoLines[0] ? cleanText(infoLines[0]) : "N/A",  // Line 1 -> Name
+          branch: infoLines[1] ? cleanText(infoLines[1]) : "CSE",  // Line 2 -> Branch
+          college: infoLines[2] ? cleanText(infoLines[2]) : "N/A",  // Line 3 -> College
+          keyword: infoLines[3] ? cleanText(infoLines[3]) : "Python",  // Line 4 -> Keyword
+          location: infoLines[4] ? cleanText(infoLines[4]) : "India",  // Line 5 -> Location
           experience: 0,
           job_type: "fulltime",
           remote: "on-site",
@@ -130,7 +131,7 @@
         statusElement.textContent = "Searching for Jobs...";
 
         // Search for jobs
-        const jobResponse = await fetch("http://your_ec2_ip:5000/job-search", {
+        const jobResponse = await fetch("http://13.235.81.125:5000/job-search", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(jobData),
