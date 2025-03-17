@@ -116,17 +116,20 @@ def parse_all_job_details(data):
                 time_posted = f"Posted {time_diff.days} days ago"
         else:
             time_posted = "No time posted"
-
+        job_card_soup = BeautifulSoup(str(job_card), 'html.parser')
+        job_title_tag = job_card_soup.find("h3", class_="base-search-card__title")
+        job_title = job_title_tag.text.strip() if job_title_tag else "No job title"
         job_posting_tag = job_card.find("a", class_="base-card__full-link")
         job_posting_link = job_posting_tag["href"] if job_posting_tag else "No job posting link"
 
-        job_details = (company_name, location, company_link, time_posted, job_posting_link)
+        job_details = (job_title,company_name, location, company_link, time_posted, job_posting_link)
 
         if job_details in processed_jobs:
             continue
 
         processed_jobs.add(job_details)
         job_listings.append({
+            "Job Title": job_title,
             "Company": company_name,
             "Company Link": company_link,
             "Location": location,
@@ -136,7 +139,7 @@ def parse_all_job_details(data):
         count += 1
 
     output = StringIO()
-    writer = csv.DictWriter(output, fieldnames=["Company", "Company Link", "Location", "Time Posted", "Job Posting Link"])
+    writer = csv.DictWriter(output, fieldnames=["Job Title","Company", "Company Link", "Location", "Time Posted", "Job Posting Link"])
     writer.writeheader()
     writer.writerows(job_listings)
     

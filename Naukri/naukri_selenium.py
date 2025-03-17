@@ -36,10 +36,12 @@ def naukri(keyword,location,experience,remote,ctc_filters,date_posted):
     url = generate_naukri_job_url(keyword,location,experience,remote,ctc_filters,date_posted)
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
 
-    driver.get(url)
+    driver.get(url) 
+    
 
     sleep(6) 
     page_source = driver.page_source
+    
 
     soup = BeautifulSoup(page_source, 'html.parser')
     page_soup = soup.find_all("div", class_="srp-jobtuple-wrapper")

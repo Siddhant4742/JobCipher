@@ -29,17 +29,17 @@ ctc_filters=""
 radius="10"
 
 # Creating Threads
-linkedin_thread = threading.Thread(target=linkedin, args=(keyword, location, experience, job_type, remote, date_posted, company, industry))
-naukri_thread = threading.Thread(target=naukri, args=(keyword, location, experience, remote, ctc_filters, date_posted))
-careerjet_thread = threading.Thread(target=careerjet, args=(keyword, location, job_type, job_type, company, date_posted, radius))
-
+# linkedin_thread = threading.Thread(target=linkedin, args=(keyword, location, experience, job_type, remote, date_posted, company, industry))
+# naukri_thread = threading.Thread(target=naukri, args=(keyword, location, experience, remote, ctc_filters, date_posted))
+# careerjet_thread = threading.Thread(target=careerjet, args=(keyword, location, job_type, job_type, company, date_posted, radius))
+linkedin_result=linkedin(keyword, location, experience, job_type, remote, date_posted, company, industry)
 # Starting Threads
-linkedin_thread.start()
-naukri_thread.start()
-careerjet_thread.start()
+# linkedin_thread.start()
+# naukri_thread.start()
+# careerjet_thread.start()
 # Wait for both threads to finish
-linkedin_thread.join()
-naukri_thread.join()
-careerjet_thread.join()
-
+# linkedin_thread.join()
+# naukri_thread.join()
+# careerjet_thread.join()
+print(linkedin_result)
 print("Both job searches completed!")
