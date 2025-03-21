@@ -18,16 +18,17 @@ def generate_naukri_job_url(keyword,location,experience,remote,ctc_filters,date_
     
     # job_age = input("Enter job age (in days, leave blank if not needed): ").strip()
     time_map = {"month": 30, "week": 7, "hours": 1}
-    if date_posted:
-        parts = date_posted.lower().split()
-        if len(parts) == 2 and parts[1] in time_map:
-            try:
-                num = int(parts[0])
-                date_posted=num * time_map[parts[1]]  # Convert to days
-            except ValueError:
-                date_posted=1  # Default to 1 day if input is invalid
-    else:
-        date_posted=1
+    # if date_posted:
+    #     parts = date_posted.lower().split()
+    #     if len(parts) == 2 and parts[1] in time_map:
+    #         try:
+    #             num = int(parts[0])
+    #             date_posted=num * time_map[parts[1]]  # Convert to days
+    #         except ValueError:
+    #             date_posted=1  # Default to 1 day if input is invalid
+    # else:
+    #     date_posted=1
+    date_posted=time_map.get(date_posted)
     # experience = experience_map.get(input("Enter experience (in years, leave blank if not needed): ").strip().lower(), "")
     # experience = experience_map.get(input("Enter experience (in years, leave blank if not needed): ").strip().lower(), "")
     # experience=experience_map.get(experience)

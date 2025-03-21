@@ -30,7 +30,7 @@ def generate_linkedin_job_url(keyword,location,experience,job_type,remote,date_p
     
     
     job_type_map = {"Full-time": "F", "Part-time": "P", "Contract": "C", "Internship": "I"}
-    remote_map = {"On-site": "1", "Hybrid": "2", "Remote": "3"}
+    remote_map = {"on-site": "1", "hybrid": "3", "remote": "2"}
     date_posted_map = {"24 hours": "r86400", "1 week": "r604800", "1 month": "r2592000"}
     industry_map = {"Software": "4", "Finance": "96", "Education": "142"}
     if experience:

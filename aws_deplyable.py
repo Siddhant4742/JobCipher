@@ -69,7 +69,6 @@ def job_search():
     name=data.get("name","")
     college=data.get("college","")
     branch=data.get("branch","")
-    
     keyword = data.get("keyword", "")
     location = data.get("location", "")
     experience = data.get("experience", 1)
@@ -83,7 +82,6 @@ def job_search():
     store_user_data(keyword,name,college,branch)
     # Run job search functions (returning CSV strings)
     linkedin_csv = linkedin(keyword, location, experience, job_type, remote, date_posted, company, industry)
-    naukri_csv = naukri(keyword, location, experience, remote, ctc_filters, date_posted)
     naukri_csv = naukri(keyword, location, experience, remote, ctc_filters, date_posted)
 #    careerjet_csv = careerjet(keyword, location, job_type, job_type, company, date_posted, radius)
     print("linkedin started")
