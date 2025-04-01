@@ -1,6 +1,8 @@
 # Function to store user data in DynamoDB
+from datetime import datetime
 import uuid
 import boto3
+import pytz  
 # AWS Credentials (Replace with your actual keys)
 AWS_ACCESS_KEY = "your_acess_key"
 AWS_SECRET_KEY = "your_secret_key"
@@ -20,6 +22,8 @@ dynamodb = boto3.resource(
 table = dynamodb.Table("Job_Cipher_Users")
 def store_user_data(keyword,name,college,branch):
     User_id = str(uuid.uuid4())  # Generate a unique ID
+    ist = pytz.timezone("Asia/Kolkata")
+    timestamp = datetime.now(ist).isoformat()  # IST timestamp
     try:
         table.put_item(
             Item={
@@ -28,6 +32,7 @@ def store_user_data(keyword,name,college,branch):
                 "branch": branch,
                 "college": college,
                 "keyword": keyword,
+                "created_at": timestamp,
             }
         )
         print("User data successfully added to DynamoDB!")
