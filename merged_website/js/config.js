@@ -1,5 +1,5 @@
 // Global configuration and settings
-const API_BASE_URL = "http://65.1.108.194";
+const API_BASE_URL = "http://43.204.102.186";
 
 // Default filters
 const DEFAULT_FILTERS = {
