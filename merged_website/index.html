@@ -19,7 +19,23 @@
         <input type="text" id="companyReviewInput" placeholder="e.g., Amazon">
         <button type="button" id="getReviewsButton">Get Company Reviews</button>
       </div>
-      
+       <!-- Job Alert Section -->
+       <div class="job-alert-section">
+        <h2>Create Job Alert</h2>
+        <form id="jobAlertForm">
+          <label for="alertKeyword">Job Keyword:</label>
+          <input type="text" id="alertKeyword" placeholder="e.g., Software Engineer" required>
+          
+          <label for="alertLocation">Location:</label>
+          <input type="text" id="alertLocation" placeholder="e.g., Bangalore" required>
+          
+          <label for="alertEmail">Your Email:</label>
+          <input type="email" id="alertEmail" placeholder="your@example.com" required>
+          
+          <button type="submit" id="createAlertButton">Create Alert</button>
+        </form>
+        <div id="alertStatus"></div>
+      </div>
       <!-- Filters Section -->
       <div class="filters-section">
         <h3>Filters</h3>

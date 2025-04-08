@@ -1,6 +1,6 @@
 // Global configuration and settings
-const API_BASE_URL = "http://43.204.102.186";
-
+const API_BASE_URL = "http://ec2_ip";
+const API_JOB_ALERT_URL= "http://ec2_ip";
 // Default filters
 const DEFAULT_FILTERS = {
   experience: 0,
@@ -25,4 +25,4 @@ const PROXY_OPTIONS = [
   { name: 'No proxy (direct request)', url: '' }
 ];
 
-export { API_BASE_URL, DEFAULT_FILTERS, PROXY_OPTIONS };
+export { API_BASE_URL, DEFAULT_FILTERS, PROXY_OPTIONS,API_JOB_ALERT_URL };
