@@ -3,12 +3,16 @@ import { logMessage } from './utils.js';
 import { searchCareerJetJobs, downloadCSV } from './careerjet.js';
 import { getCompanyReviews } from './reviews.js';
 import { uploadResumeAndSearchJobs } from './jobsearch.js';
+import { initJobAlerts } from './jobalert.js';
 
 // Current filters state
 let filters = { ...DEFAULT_FILTERS };
 
 // Initialize event listeners once DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
+  // Initialize job alerts functionality
+  initJobAlerts();
+  
   // Populate proxy selector if it exists
   const proxySelector = document.getElementById('proxy-selector');
   if (proxySelector) {
