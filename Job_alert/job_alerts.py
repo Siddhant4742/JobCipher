@@ -24,7 +24,8 @@ def subscribe_alert():
             'email': email
         }
         aws_creds = get_aws_credentials()
-        _,_,_,public_ip=aws_creds
+        access,secret,region,instance_id=aws_creds
+        public_ip=get_public_ip(instance_id,region,access,secret)
         ec2_url = f"http://{public_ip}:5000/job-search"
         email_user = 'your_email@gmail.com'
         app_password = 'your_password'

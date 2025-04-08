@@ -28,5 +28,3 @@ def get_public_ip(instance_id, region, access_key, secret_key):
     except ClientError as e:
         print(f"❌ AWS Client Error: {e}")
 
-if __name__ == "__main__":
-    get_public_ip(INSTANCE_ID, REGION, AWS_ACCESS_KEY, AWS_SECRET_KEY)
