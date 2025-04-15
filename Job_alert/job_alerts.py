@@ -27,8 +27,8 @@ def subscribe_alert():
         access,secret,region,instance_id=aws_creds
         public_ip=get_public_ip(instance_id,region,access,secret)
         ec2_url = f"http://{public_ip}:5000/job-search"
-        email_user = 'your_email@gmail.com'
-        app_password = 'your_password'
+        email_user = 'fortestingpurpose4742@gmail.com'
+        app_password = 'qjzw aceg egsg ngca'
 
         # Send to EC2 and get raw CSVs
         ec2_success, csv_data = send_to_ec2_and_get_csv(keyword, location, ec2_url)
@@ -90,3 +90,126 @@ def send_to_ec2_and_get_csv(keyword, location, ec2_url):
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5004, debug=True)
+
+
+
+
+#*************************FOR TESTING USE BELOW CODE***********************************
+
+
+# import requests
+# import argparse
+# from sending_emails import send_email_with_job_tiles  # Use our new HTML job alert function
+# from dyanmodb_data_for_alerts import add_to_dynamodb
+# from aws_credentials import get_aws_credentials
+# from get_public_ip import get_ip
+
+# def send_to_ec2_and_get_csv(keyword, location, ec2_url):
+#     """Send job search request to EC2 instance and get CSV data."""
+#     try:
+#         job_data = {
+#             "name": "Siddhant",
+#             "college": "VIT",
+#             "branch": "CSE",
+#             "keyword": keyword,
+#             "location": location,
+#             "experience": 1,
+#             "job_type": "fulltime",
+#             "remote": "on-site",
+#             "date_posted": "1 week",
+#             "company": "",
+#             "industry": "",
+#             "ctc_filters": "",
+#             "radius": "10",
+#             "Job_Alert": True
+#         }
+
+#         print(f"Sending request to EC2 for: {keyword} in {location}")
+#         response = requests.post(ec2_url, json=job_data)
+
+#         if response.status_code == 200:
+#             try:
+#                 return True, response.json()  # return raw CSVs
+#             except Exception as e:
+#                 print(f"Error parsing response: {e}")
+#                 return False, None
+#         else:
+#             print(f"EC2 request failed with status code: {response.status_code}")
+#             return False, None
+#     except Exception as e:
+#         print(f"Exception in send_to_ec2_and_get_csv: {e}")
+#         return False, None
+
+# def process_job_alert(keyword, location, email):
+#     """Process a job alert by fetching data and sending email."""
+#     try:
+#         print(f"Processing job alert for: {keyword} in {location}, sending to: {email}")
+        
+#         # Get AWS credentials and EC2 public IP
+#         aws_creds = get_aws_credentials()
+#         access, secret, region, instance_id = aws_creds
+#         public_ip =get_ip(instance_id, region, access, secret)
+    
+#         ec2_url = f"http://{public_ip}:5000/job-search"
+#         print(ec2_url)
+#         # Email credentials
+#         email_user = 'fortestingpurpose4742@gmail.com'
+#         app_password = 'your_password'
+
+#         # Send to EC2 and get raw CSVs
+#         print("Fetching job data from EC2...")
+#         ec2_success, csv_data = send_to_ec2_and_get_csv(keyword, location, ec2_url)
+        
+#         if not ec2_success:
+#             print("❌ Failed to retrieve job data from EC2")
+#             return False
+        
+#         print("✅ Successfully retrieved job data")
+        
+#         # Store user data in DynamoDB
+#         user_data = {
+#             'keyword': keyword,
+#             'location': location,
+#             'email': email
+#         }
+        
+#         table_name = 'Job_Alerts'
+#         db_success, subscription_id = add_to_dynamodb(aws_creds, table_name, user_data)
+        
+#         if db_success:
+#             print(f"✅ Successfully saved subscription with ID: {subscription_id}")
+#         else:
+#             print("⚠️ Warning: Failed to save to DynamoDB, but continuing...")
+        
+#         # Send email with our new HTML job tiles function
+#         print(f"Sending email to {email}...")
+#         email_success = send_email_with_job_tiles(email, keyword, location, csv_data, email_user, app_password)
+        
+#         if email_success:
+#             print(f"✅ Successfully sent job alert email to {email}")
+#             return True
+#         else:
+#             print("❌ Failed to send email")
+#             return False
+        
+#     except Exception as e:
+#         print(f"❌ Error processing job alert: {e}")
+#         return False
+
+# def main():
+#     # Set up command line argument parsing
+#     keyword="python developer"
+#     location="India"
+#     email="siddhantandure@gmail.com"
+    
+#     # Process the job alert
+#     result = process_job_alert(keyword,location,email)
+    
+#     if result:
+#         print("🎉 Job alert processing completed successfully!")
+#     else:
+#         print("😞 Job alert processing failed.")
+#         exit(1)
+
+# if __name__ == "__main__":
+#     main()
