@@ -1,6 +1,6 @@
 // Global configuration and settings
-const API_BASE_URL = "http://ec2_ip";
-const API_JOB_ALERT_URL= "http://ec2_ip";
+const API_BASE_URL = "http://15.207.112.54";
+const API_JOB_ALERT_URL= "http://13.126.77.20";
 // Default filters
 const DEFAULT_FILTERS = {
   experience: 0,
